@@ -97,7 +97,7 @@ PORT=3000
 
 # RapidAPI Sky Scrapper Credentials
 RAPIDAPI_KEY=YOUR_RAPIDAPI_KEY_HERE
-RAPIDAPI_HOST=sky-scrapper3.p.rapidapi.com
+RAPIDAPI_HOST=flights-sky.p.rapidapi.com
 
 # Email Alert Credentials (Gmail SMTP App Password)
 EMAIL_USER=your_email@gmail.com
