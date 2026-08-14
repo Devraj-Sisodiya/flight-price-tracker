@@ -34,17 +34,6 @@ async function checkFlightPrices() {
         // Fetch current price from external API / mock fallback
         const currentPrice = await getFlightPrice(origin, destination, departure_date);
 
-        // Record latest checked price in SQLite
-        db.run(
-          'UPDATE TrackingRequests SET last_checked_price = ? WHERE id = ?',
-          [currentPrice, id],
-          (updateErr) => {
-            if (updateErr) {
-              console.error(`[Worker DB Error] Failed updating price for Request #${id}:`, updateErr.message);
-            }
-          }
-        );
-
         // Alert condition evaluation
         if (currentPrice <= target_price) {
           console.log(`🎉 [ALERT TRIGGERED] Request #${id}: Current price ₹${currentPrice} <= Target ₹${target_price}!`);
@@ -58,10 +47,10 @@ async function checkFlightPrices() {
           });
 
           if (emailSent) {
-            // Deactivate request to avoid sending duplicate alerts
+            // Atomically record price & deactivate request to avoid duplicate alerts and UI race conditions
             db.run(
-              'UPDATE TrackingRequests SET is_active = 0 WHERE id = ?',
-              [id],
+              'UPDATE TrackingRequests SET last_checked_price = ?, is_active = 0 WHERE id = ?',
+              [currentPrice, id],
               (deactivateErr) => {
                 if (deactivateErr) {
                   console.error(`[Worker DB Error] Deactivation failed for Request #${id}:`, deactivateErr.message);
@@ -72,6 +61,16 @@ async function checkFlightPrices() {
             );
           }
         } else {
+          // Record latest checked price in SQLite when target not met
+          db.run(
+            'UPDATE TrackingRequests SET last_checked_price = ? WHERE id = ?',
+            [currentPrice, id],
+            (updateErr) => {
+              if (updateErr) {
+                console.error(`[Worker DB Error] Failed updating price for Request #${id}:`, updateErr.message);
+              }
+            }
+          );
           console.log(`[Worker] Request #${id}: Current price ₹${currentPrice} > Target ₹${target_price}. Monitoring continues.`);
         }
       } catch (reqErr) {
