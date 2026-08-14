@@ -11,37 +11,52 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
- * Builds the responsive HTML email template for flight price drop notifications.
- * Note: Email clients (Gmail, Outlook, Apple Mail) require inline styles 
- * because they block external CSS files (<link rel="stylesheet">) for security.
+ * Isolated CSS styles object map.
+ * Keeps style definitions clean, modular, and separate from HTML markup.
+ */
+const EMAIL_STYLES = {
+  container: 'font-family: Arial, sans-serif; padding: 24px; color: #1e293b; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;',
+  header: 'color: #003580; margin-top: 0; font-size: 20px;',
+  text: 'color: #475569; font-size: 14px; line-height: 1.5;',
+  table: 'width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;',
+  rowLight: 'background-color: #f8fafc;',
+  cellLabel: 'padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;',
+  cellValue: 'padding: 12px; border: 1px solid #e2e8f0; color: #0f172a; font-weight: 600;',
+  targetPrice: 'padding: 12px; border: 1px solid #e2e8f0; color: #d97706; font-weight: bold;',
+  currentPrice: 'padding: 12px; border: 1px solid #e2e8f0; color: #16a34a; font-size: 18px; font-weight: bold;',
+  footer: 'font-size: 13px; color: #64748b; margin-bottom: 0;'
+};
+
+/**
+ * Clean HTML template builder referencing the EMAIL_STYLES map.
  */
 function generateEmailTemplate({ origin, destination, departureDate, targetPrice, currentPrice }) {
   return `
-    <div style="font-family: Arial, sans-serif; padding: 24px; color: #1e293b; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-      <h2 style="color: #003580; margin-top: 0; font-size: 20px;">Good News! Flight Price Alert Triggered</h2>
-      <p style="color: #475569; font-size: 14px; line-height: 1.5;">The price for your tracked flight route has dropped below your target price.</p>
+    <div style="${EMAIL_STYLES.container}">
+      <h2 style="${EMAIL_STYLES.header}">Good News! Flight Price Alert Triggered</h2>
+      <p style="${EMAIL_STYLES.text}">The price for your tracked flight route has dropped below your target price.</p>
       
-      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
-        <tr style="background-color: #f8fafc;">
-          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Route</td>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #0f172a; font-weight: 600;">${origin} ➔ ${destination}</td>
+      <table style="${EMAIL_STYLES.table}">
+        <tr style="${EMAIL_STYLES.rowLight}">
+          <td style="${EMAIL_STYLES.cellLabel}">Route</td>
+          <td style="${EMAIL_STYLES.cellValue}">${origin} ➔ ${destination}</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Departure Date</td>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #0f172a;">${departureDate}</td>
+          <td style="${EMAIL_STYLES.cellLabel}">Departure Date</td>
+          <td style="${EMAIL_STYLES.cellValue}">${departureDate}</td>
         </tr>
-        <tr style="background-color: #f8fafc;">
-          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Your Target Price</td>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #d97706; font-weight: bold;">₹${targetPrice}</td>
+        <tr style="${EMAIL_STYLES.rowLight}">
+          <td style="${EMAIL_STYLES.cellLabel}">Your Target Price</td>
+          <td style="${EMAIL_STYLES.targetPrice}">₹${targetPrice}</td>
         </tr>
         <tr>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Current Lowest Price</td>
-          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #16a34a; font-size: 18px; font-weight: bold;">₹${currentPrice}</td>
+          <td style="${EMAIL_STYLES.cellLabel}">Current Lowest Price</td>
+          <td style="${EMAIL_STYLES.currentPrice}">₹${currentPrice}</td>
         </tr>
       </table>
 
-      <p style="font-size: 13px; color: #64748b; margin-bottom: 0;">
-        Book now to lock in this price. Your price tracking alert for this request has now been fulfilled and marked as inactive.
+      <p style="${EMAIL_STYLES.footer}">
+        Book now to lock in this price. Your price tracking alert for this request has been marked as inactive.
       </p>
     </div>
   `;
