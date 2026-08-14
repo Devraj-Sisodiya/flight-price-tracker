@@ -228,8 +228,37 @@ app.get('/api/track', (req, res) => {
   });
 });
 
+/**
+ * GET /ping
+ * Health check & keep-alive ping endpoint to keep server 24/7 active
+ */
+app.get('/ping', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Server is active and running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Start API Web Server
 app.listen(PORT, () => {
   console.log(`🚀 [Server] Flight Price Alert Microservice running on http://localhost:${PORT}`);
   console.log(`📌 Open Chrome tab: http://localhost:${PORT}`);
+
+  // Self-ping keep-alive mechanism (prevents free hosts like Render/Koyeb from spinning down)
+  const SERVER_URL = process.env.SERVER_URL || process.env.RENDER_EXTERNAL_URL;
+  if (SERVER_URL) {
+    const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+    setInterval(async () => {
+      try {
+        const pingUrl = `${SERVER_URL.replace(/\/$/, '')}/ping`;
+        await fetch(pingUrl);
+        console.log(`[Keep-Alive] Self-ping sent to ${pingUrl}`);
+      } catch (err) {
+        console.error(`[Keep-Alive Failure] ${err.message}`);
+      }
+    }, PING_INTERVAL);
+    console.log(`📡 [Keep-Alive] Self-ping enabled for URL: ${SERVER_URL}`);
+  }
 });
+
