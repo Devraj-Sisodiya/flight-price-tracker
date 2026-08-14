@@ -6,11 +6,12 @@
 [![Express.js](https://img.shields.io/badge/Express.js-v5.2-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite3](https://img.shields.io/badge/SQLite3-v6.0-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Nodemailer](https://img.shields.io/badge/Nodemailer-v9.0-22B8CF?style=for-the-badge&logo=gmail&logoColor=white)](https://nodemailer.com/)
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](YOUR_RENDER_LIVE_LINK_HERE)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://flight-price-tracker-ceuy.onrender.com/)
 
-> 🔗 **Live Application URL**: [YOUR_RENDER_LIVE_LINK_HERE](YOUR_RENDER_LIVE_LINK_HERE)
+> 🔗 **Live Application URL**: [https://flight-price-tracker-ceuy.onrender.com/](https://flight-price-tracker-ceuy.onrender.com/)
 
 ---
+
 
 
 ## 🌟 Key Highlights & System Architecture
@@ -118,10 +119,11 @@ Open Chrome and navigate to:
 👉 **`http://localhost:3000`**
 
 ### 🌐 Live Production Deployment
-- **Live Hosted Application**: [YOUR_RENDER_LIVE_LINK_HERE](YOUR_RENDER_LIVE_LINK_HERE)
-- **Health Check / Ping Endpoint**: `YOUR_RENDER_LIVE_LINK_HERE/ping`
+- **Live Hosted Application**: [https://flight-price-tracker-ceuy.onrender.com/](https://flight-price-tracker-ceuy.onrender.com/)
+- **Health Check / Ping Endpoint**: `https://flight-price-tracker-ceuy.onrender.com/ping`
 
 ---
+
 
 
 ## 📡 REST API Documentation
