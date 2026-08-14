@@ -27,6 +27,6 @@
     "express": "^5.2.1",
     "node-cron": "^4.6.0",
     "nodemailer": "^9.0.5",
-    "sqlite3": "^6.0.1"
+    "sqlite3": "^5.1.7"
   }
 }
