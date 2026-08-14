@@ -1,15 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const db = require('./db');
-// Import worker so server and background worker run seamlessly together in 1 process!
+// Import worker so server and background worker run seamlessly together in 1 process
 require('./worker');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Express middleware for JSON & Form URL encoding
+// Express middleware for JSON, form data, and static assets (style.css)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname));
 
 /**
  * GET /
@@ -23,29 +25,7 @@ app.get('/', (req, res) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Flight Price Alert Microservice</title>
-      <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 40px 20px; display: flex; justify-content: center; }
-        .container { max-width: 800px; width: 100%; background: #1e293b; border-radius: 12px; padding: 32px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #38bdf8; margin-top: 0; display: flex; align-items: center; gap: 10px; }
-        p { color: #94a3b8; }
-        form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; background: #0f172a; padding: 20px; border-radius: 8px; }
-        .full-width { grid-column: span 2; }
-        label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #cbd5e1; font-weight: 600; margin-bottom: 6px; display: block; }
-        input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #1e293b; color: #fff; font-size: 1rem; outline: none; }
-        input:focus { border-color: #38bdf8; }
-        button { background: #0284c7; color: white; border: none; padding: 14px; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #0369a1; }
-        #message { margin-top: 20px; padding: 14px; border-radius: 6px; display: none; font-weight: 500; }
-        .success { background: #064e3b; color: #34d399; border: 1px solid #059669; }
-        .error { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
-        table { width: 100%; border-collapse: collapse; margin-top: 24px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: #0f172a; color: #38bdf8; font-size: 0.85rem; text-transform: uppercase; }
-        .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-        .badge-active { background: #1e3a8a; color: #93c5fd; }
-        .badge-inactive { background: #14532d; color: #86efac; }
-      </style>
+      <link rel="stylesheet" href="/style.css">
     </head>
     <body>
       <div class="container">
