@@ -1,0 +1,30 @@
+{
+  "name": "flight-price-tracker",
+  "version": "1.0.0",
+  "description": "Flight price alert engine implementing data caching, cron scheduling, and third-party rate-limit handling.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devraj-Sisodiya/flight-price-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Devraj-Sisodiya/flight-price-tracker/issues"
+  },
+  "homepage": "https://github.com/Devraj-Sisodiya/flight-price-tracker#readme",
+  "dependencies": {
+    "amadeus": "^11.0.0",
+    "axios": "^1.19.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-cron": "^4.6.0",
+    "nodemailer": "^9.0.5",
+    "sqlite3": "^6.0.1"
+  }
+}
