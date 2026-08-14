@@ -11,12 +11,11 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
- * Isolated CSS styles object map.
- * Keeps style definitions clean, modular, and separate from HTML markup.
+ * Isolated CSS styles map — clean, modular, and separate from HTML markup.
  */
 const EMAIL_STYLES = {
   container: 'font-family: Arial, sans-serif; padding: 24px; color: #1e293b; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;',
-  header: 'color: #003580; margin-top: 0; font-size: 20px;',
+  header: 'color: #0284c7; margin-top: 0; font-size: 20px;',
   text: 'color: #475569; font-size: 14px; line-height: 1.5;',
   table: 'width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;',
   rowLight: 'background-color: #f8fafc;',
@@ -34,7 +33,7 @@ function generateEmailTemplate({ origin, destination, departureDate, targetPrice
   return `
     <div style="${EMAIL_STYLES.container}">
       <h2 style="${EMAIL_STYLES.header}">Good News! Flight Price Alert Triggered</h2>
-      <p style="${EMAIL_STYLES.text}">The price for your tracked flight route has dropped below your target price.</p>
+      <p style="${EMAIL_STYLES.text}">The price for your tracked flight route has dropped below your target price threshold.</p>
       
       <table style="${EMAIL_STYLES.table}">
         <tr style="${EMAIL_STYLES.rowLight}">
@@ -73,7 +72,7 @@ async function sendPriceAlertEmail(toEmail, flightData) {
   const { origin, destination, currentPrice } = flightData;
 
   const mailOptions = {
-    from: `"Expedia Flight Alert" <${process.env.EMAIL_USER || 'alerts@expedia-tracker.com'}>`,
+    from: `"Flight Price Alert" <${process.env.EMAIL_USER || 'alerts@flight-tracker.com'}>`,
     to: toEmail,
     subject: `✈️ Price Drop Alert: ${origin} to ${destination} is now ₹${currentPrice}!`,
     html: generateEmailTemplate(flightData)

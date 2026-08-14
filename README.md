@@ -1,4 +1,4 @@
-# ✈️ Expedia Flight Price Tracker Microservice
+# ✈️ Flight Price Tracker Microservice
 
 > A production-grade, asynchronous backend microservice that monitors real-time flight price fluctuations, schedules periodic background checks via cron workers, and dispatches automated HTML email alerts when prices drop below user target thresholds.
 
@@ -11,7 +11,7 @@
 
 ## 🌟 Key Highlights & System Architecture
 
-Expedia relies heavily on background asynchronous tasks to track price fluctuations across third-party airline APIs. This microservice models that exact real-world engineering pattern:
+Modern travel search engines rely heavily on background asynchronous tasks to track price fluctuations across third-party airline APIs. This microservice implements a complete, scalable solution:
 
 - ⚡ **Asynchronous Background Processing**: Decouples web API request handling from heavy polling loops using a dedicated background worker (`worker.js`).
 - 🛡️ **Rate Limit & Circuit Breaker Protection**: Integrates RapidAPI Sky Scrapper via `axios` with a deterministic mock price fallback engine to prevent 429/404 crashes during rate limit spikes.
