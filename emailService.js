@@ -11,58 +11,62 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
+ * Builds the responsive HTML email template for flight price drop notifications.
+ * Note: Email clients (Gmail, Outlook, Apple Mail) require inline styles 
+ * because they block external CSS files (<link rel="stylesheet">) for security.
+ */
+function generateEmailTemplate({ origin, destination, departureDate, targetPrice, currentPrice }) {
+  return `
+    <div style="font-family: Arial, sans-serif; padding: 24px; color: #1e293b; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+      <h2 style="color: #003580; margin-top: 0; font-size: 20px;">Good News! Flight Price Alert Triggered</h2>
+      <p style="color: #475569; font-size: 14px; line-height: 1.5;">The price for your tracked flight route has dropped below your target price.</p>
+      
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;">
+        <tr style="background-color: #f8fafc;">
+          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Route</td>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #0f172a; font-weight: 600;">${origin} ➔ ${destination}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Departure Date</td>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #0f172a;">${departureDate}</td>
+        </tr>
+        <tr style="background-color: #f8fafc;">
+          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Your Target Price</td>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #d97706; font-weight: bold;">₹${targetPrice}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #475569;">Current Lowest Price</td>
+          <td style="padding: 12px; border: 1px solid #e2e8f0; color: #16a34a; font-size: 18px; font-weight: bold;">₹${currentPrice}</td>
+        </tr>
+      </table>
+
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 0;">
+        Book now to lock in this price. Your price tracking alert for this request has now been fulfilled and marked as inactive.
+      </p>
+    </div>
+  `;
+}
+
+/**
  * Sends a flight price alert email when current flight price drops below target price.
  * 
  * @param {string} toEmail - Recipient email address
  * @param {Object} flightData - Object containing flight route details and prices
- * @param {string} flightData.origin - Departure airport IATA code
- * @param {string} flightData.destination - Arrival airport IATA code
- * @param {string} flightData.departureDate - Departure date (YYYY-MM-DD)
- * @param {number} flightData.targetPrice - Target price threshold set by user
- * @param {number} flightData.currentPrice - Current lowest price detected
  * @returns {Promise<boolean>} True if email dispatched successfully
  */
 async function sendPriceAlertEmail(toEmail, flightData) {
-  const { origin, destination, departureDate, targetPrice, currentPrice } = flightData;
+  const { origin, destination, currentPrice } = flightData;
 
   const mailOptions = {
     from: `"Expedia Flight Alert" <${process.env.EMAIL_USER || 'alerts@expedia-tracker.com'}>`,
     to: toEmail,
     subject: `✈️ Price Drop Alert: ${origin} to ${destination} is now ₹${currentPrice}!`,
-    html: `
-      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e0e0e0; border-radius: 8px;">
-        <h2 style="color: #003580;">Good News! Flight Price Alert Triggered</h2>
-        <p>The price for your tracked flight route has dropped below your target price.</p>
-        
-        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-          <tr style="background-color: #f9f9f9;">
-            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Route</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">${origin} ➔ ${destination}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Departure Date</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">${departureDate}</td>
-          </tr>
-          <tr style="background-color: #f9f9f9;">
-            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Your Target Price</td>
-            <td style="padding: 10px; border: 1px solid #ddd; color: #e67e22; font-weight: bold;">₹${targetPrice}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Current Lowest Price</td>
-            <td style="padding: 10px; border: 1px solid #ddd; color: #27ae60; font-size: 1.2em; font-weight: bold;">₹${currentPrice}</td>
-          </tr>
-        </table>
-
-        <p style="font-size: 0.9em; color: #666;">
-          Book now to lock in this price. Your price tracking alert for this request has now been fulfilled and marked as inactive.
-        </p>
-      </div>
-    `
+    html: generateEmailTemplate(flightData)
   };
 
   try {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log(`[EmailService Mock] Simulated alert email sent to ${toEmail} for ${origin} -> ${destination} (Current: ₹${currentPrice}, Target: ₹${targetPrice})`);
+      console.log(`[EmailService Mock] Simulated alert email sent to ${toEmail} for ${origin} -> ${destination} (Current: ₹${currentPrice})`);
       return true;
     }
 
